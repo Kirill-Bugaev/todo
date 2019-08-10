@@ -1,0 +1,23 @@
+doctype html
+html(lang=en)
+
+	head
+		meta(charset="utf-8")
+		link(rel="stylesheet" type="text/css" href="./css/style.css")
+		script(src="./js/gui.js")
+		title ToDo List
+
+	body
+		header #[h1 TODO]
+
+		form(name="add" action="php/action.php" method="post")
+			.buttons-container
+				button.button(type="submit") add
+				select(id="palette" required onchange="setSelectColor(this)")
+					- const colors = ["default", "red", "green", "yellow", "blue", "purple", "aqua"]
+					mixin opt(color)
+						option(value=color) blue?
+					each col in colors
+						+opt(col)
+				button(class="button permbutton" type="button" onclick="toggleNew(this)") new
+			textarea(placeholder="Enter task here..." required)

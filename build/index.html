@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="./css/style.css">
+    <script src="./js/gui.js"></script>
+    <title>ToDo List</title>
+</head>
+
+<body>
+    <header>
+        <h1>TODO</h1>
+    </header>
+    <form name="add" action="php/action.php" method="post">
+        <div class="buttons-container"><button class="button" type="submit">add</button><select id="palette" required onchange="setSelectColor(this)">
+                <option value="default">blue?</option>
+                <option value="red">blue?</option>
+                <option value="green">blue?</option>
+                <option value="yellow">blue?</option>
+                <option value="blue">blue?</option>
+                <option value="purple">blue?</option>
+                <option value="aqua">blue?</option>
+            </select><button class="button permbutton" type="button" onclick="toggleNew(this)">new</button></div><textarea placeholder="Enter task here..." required></textarea>
+    </form>
+</body>
+
+</html>

@@ -1,0 +1,4 @@
+**/tags
+**/.eslintrc.js
+**/.eslintrc.json
+node_modules

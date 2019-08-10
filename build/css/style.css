@@ -1,0 +1,100 @@
+:root {
+  --button-height: 25px;
+  --min-form-height: 28px
+; }
+
+:focus {
+  outline: none; }
+
+body {
+  background-color: #282828;
+  color: #ebdbb2;
+  font-family: DejaVu Sans;
+  margin: 0 auto;
+  min-width: 480px;
+  padding: 0;
+  width: 640px; }
+
+@media (max-width: 680px) {
+  body {
+    width: 95%; } }
+
+form {
+  height: 28px; }
+
+.buttons-container {
+  display: inline;
+  float: right;
+  text-align: right; }
+
+.button, select {
+  background-color: #928374;
+  border: solid 2px #fe8019;
+  color: #1d2021;
+  display: none;
+  height: 25px;
+  margin-bottom: 3px;
+  margin-left: 5px;
+  width: 60px; }
+
+.permbutton {
+  display: inline; }
+
+select {
+  background-color: #ebdbb2;
+  color: #ebdbb2; }
+
+option[value="default"] {
+  background-color: #ebdbb2;
+  color: #ebdbb2; }
+
+option[value="red"] {
+  background-color: #fb4934;
+  color: #fb4934; }
+
+option[value="green"] {
+  background-color: #b8bb26;
+  color: #b8bb26; }
+
+option[value="yellow"] {
+  background-color: #fabd2f;
+  color: #fabd2f; }
+
+option[value="blue"] {
+  background-color: #83a598;
+  color: #83a598; }
+
+option[value="purple"] {
+  background-color: #d3869b;
+  color: #d3869b; }
+
+option[value="aqua"] {
+  background-color: #8ec07c;
+  color: #8ec07c; }
+
+textarea {
+  background-color: #504945;
+  border: none;
+  box-sizing: border-box;
+  box-shadow: inset 0 0 0 2px #fe8019;
+  color: #ebdbb2;
+  display: none;
+  height: 50vh;
+  min-height: 320px;
+  resize: none;
+  padding: 2%;
+  width: 100%; }
+  textarea::placeholder {
+    color: #928374; }
+
+hr {
+  border: 1px solid #fe8019;
+  color: #fe8019;
+  margin: 0; }
+
+.date-container {
+  display: inline-block;
+  line-height: 28px; }
+
+.task-text {
+  overflow-x: auto; }
