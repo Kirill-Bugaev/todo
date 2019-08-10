@@ -1,0 +1,16 @@
+// sass-lint:disable indentation
+
+// Nord dark
+$body-bg-color: #2e3440;
+$body-fg-color: #d8dee9;
+$border-color: #e5e9f0;
+$button-bg-color: #e5e9f0;
+$button-fg-color: #2e3440;
+$ta-bg-color: #3b4252;
+$ph-color: #4c566a;
+$colors: ('default': #d8dee9, 'red': #d08770,
+					'green': #a3be8c, 'yellow': #ebcb8b,
+					'blue': #81a1c1, 'purple': #b48ead,
+					'aqua': #8fbcbb);
+
+@import 'include/pig';

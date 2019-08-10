@@ -3,24 +3,32 @@
 
 <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" type="text/css" href="./css/style.css">
     <script src="./js/gui.js"></script>
     <title>ToDo List</title>
 </head>
 
-<body>
+<body onload="loadStyle()">
     <header>
-        <h1>TODO</h1>
+        <h1>TODO</h1><select class="themes" id="theme-sel" onchange="changeStyle(this.value)">
+            <option value="base16-dark">base16-dark</option>
+            <option value="base16-light">base16-light</option>
+            <option value="dracula">dracula</option>
+            <option value="gruvbox-dark">gruvbox-dark</option>
+            <option value="gruvbox-light">gruvbox-light</option>
+            <option value="nord">nord</option>
+            <option value="solarized-dark">solarized-dark</option>
+            <option value="solarized-light">solarized-light</option>
+        </select>
     </header>
     <form name="add" action="php/action.php" method="post">
-        <div class="buttons-container"><button class="button" type="submit">add</button><select id="palette" required onchange="setSelectColor(this)">
-                <option value="default">blue?</option>
-                <option value="red">blue?</option>
-                <option value="green">blue?</option>
-                <option value="yellow">blue?</option>
-                <option value="blue">blue?</option>
-                <option value="purple">blue?</option>
-                <option value="aqua">blue?</option>
+        <div class="buttons-container"><button class="button" type="submit">add</button><select class="palette" id="palette" required onchange="setSelectColor(this)">
+                <option class="color" value="default">blue?</option>
+                <option class="color" value="red">blue?</option>
+                <option class="color" value="green">blue?</option>
+                <option class="color" value="yellow">blue?</option>
+                <option class="color" value="blue">blue?</option>
+                <option class="color" value="purple">blue?</option>
+                <option class="color" value="aqua">blue?</option>
             </select><button class="button permbutton" type="button" onclick="toggleNew(this)">new</button></div><textarea placeholder="Enter task here..." required></textarea>
     </form>
 </body>

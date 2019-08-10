@@ -3,20 +3,24 @@ html(lang=en)
 
 	head
 		meta(charset="utf-8")
-		link(rel="stylesheet" type="text/css" href="./css/style.css")
+		//- link(rel="stylesheet" type="text/css" href="./css/style.css")
 		script(src="./js/gui.js")
 		title ToDo List
 
-	body
-		header #[h1 TODO]
-
+	body(onload="loadStyle()")
+		header
+			h1 TODO
+			select.themes(id="theme-sel" onchange="changeStyle(this.value)")
+				- const themes = ["base16-dark", "base16-light", "dracula", "gruvbox-dark", "gruvbox-light", "nord", "solarized-dark", "solarized-light"];
+				each theme in themes
+					option(value=theme) #{theme}
 		form(name="add" action="php/action.php" method="post")
 			.buttons-container
 				button.button(type="submit") add
-				select(id="palette" required onchange="setSelectColor(this)")
+				select.palette(id="palette" required onchange="setSelectColor(this)")
 					- const colors = ["default", "red", "green", "yellow", "blue", "purple", "aqua"]
 					mixin opt(color)
-						option(value=color) blue?
+						option.color(value=color) blue?
 					each col in colors
 						+opt(col)
 				button(class="button permbutton" type="button" onclick="toggleNew(this)") new

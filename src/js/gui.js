@@ -30,6 +30,21 @@ function getStyle(el, styleProp) {
   }
 }
 // ============
+function loadStyle() {
+	let sel = document.getElementById("theme-sel");
+	sel.selectedIndex = document.cookie;
+	let link = document.createElement("link");
+	link.id = "theme-style";
+	link.href = "./css/" + sel.value + ".css";
+	link.type = "text/css";
+	link.rel = "stylesheet";
+	document.getElementsByTagName("head")[0].appendChild(link);
+}
+
+function changeStyle(theme) {
+	document.getElementById("theme-style").href = "./css/" + theme + ".css";
+	document.cookie = document.getElementById("theme-sel").selectedIndex;
+}
 
 function toggleNew(button) {
 	let newname;
@@ -157,7 +172,6 @@ function showTask(date, text, color, done) {
 	document.body.appendChild(hr);
 	document.body.appendChild(br2);
 
-
 	let palette = document.getElementById("palette");
 	let colorval = getStyle(palette.options[color], "color");
 
@@ -183,10 +197,12 @@ function showTask(date, text, color, done) {
 			submit.innerHTML = "ok";
 			// select
 			let select = document.createElement("select");
+			select.classList.add("palette");
 				// options
 				const colors = ["default", "red", "green", "yellow", "blue", "purple", "aqua"]
 				for (let i = 0; i < colors.length; i++) {
 					let opt = document.createElement("option");
+					opt.classList.add("color");
 					opt.value = colors[i];
 					opt.innerHTML = "blue?";
 					select.appendChild(opt);

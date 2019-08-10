@@ -8,19 +8,6 @@ $button-width: 60px;
 $button-margin-bottom: 3px;
 $min-form-height: $button-height + $button-margin-bottom;
 
-$body-bg-color: #282828;
-$body-fg-color: #ebdbb2;
-$border-color: #fe8019;
-$button-bg-color: #928374;
-$button-fg-color: #1d2021;
-$ta-bg-color: #504945;
-$ph-color: #928374;
-$colors: ('default': #ebdbb2, 'red': #fb4934,
-					'green': #b8bb26, 'yellow': #fabd2f,
-					'blue': #83a598, 'purple': #d3869b,
-					'aqua': #8ec07c);
-
-
 :root {
 	--button-height: #{$button-height};
 	--min-form-height: #{$min-form-height}
@@ -45,6 +32,14 @@ body {
 
 @media(max-width: $body-width + 40px) {
 	body { width: 95%; }
+}
+
+h1 {
+	display: inline-block;
+}
+
+select.themes {
+	float: right;
 }
 
 form {
@@ -75,14 +70,14 @@ form {
 	display: inline;
 }
 
-select {
+select.palette {
 	@extend .button;
 	background-color: map-get($colors, 'default');
 	color: map-get($colors, 'default');
 }
 
 @each $name, $hex in $colors {
-	option[value="#{$name}"] {
+	option.color[value="#{$name}"] {
 		@include opt-color($hex)
 	}
 }

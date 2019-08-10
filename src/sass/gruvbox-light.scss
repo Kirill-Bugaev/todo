@@ -1,0 +1,16 @@
+// sass-lint:disable indentation
+
+// GruvBox light
+$body-bg-color: #fbf1c7;
+$body-fg-color: #3c3836;
+$border-color: #af3a03;
+$button-bg-color: #928374;
+$button-fg-color: #f9f5d7;
+$ta-bg-color: #d5c4a1;
+$ph-color: #928374;
+$colors: ('default': #3c3836, 'red': #9d0006,
+					'green': #79740e, 'yellow': #b57614,
+					'blue': #076678, 'purple': #8f3f71,
+					'aqua': #427b58);
+
+@import 'include/pig';

@@ -1,0 +1,16 @@
+// sass-lint:disable indentation
+
+// Base16 light
+$body-bg-color: #e8e8e8;
+$body-fg-color: #282828;
+$border-color: #a16946;
+$button-bg-color: #383838;
+$button-fg-color: #f8f8f8;
+$ta-bg-color: #b8b8b8;
+$ph-color: #585858;
+$colors: ('default': #282828, 'red': #ab4642,
+					'green': #a1b56c, 'yellow': #f7ca88,
+					'blue': #7cafc2, 'purple': #ba8baf,
+					'aqua': #dc9656);
+
+@import 'include/pig';

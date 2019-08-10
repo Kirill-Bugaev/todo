@@ -1,0 +1,16 @@
+// sass-lint:disable indentation
+
+// Solarized dark
+$body-bg-color: #002b36;
+$body-fg-color: #839496;
+$border-color: #cb4b16;
+$button-bg-color: #93a1a1;
+$button-fg-color: #002b36;
+$ta-bg-color: #073642;
+$ph-color: #586e75;
+$colors: ('default': #839496, 'red': #dc322f,
+					'green': #859900, 'yellow': #b58900,
+					'blue': #268bd2, 'purple': #6c71c4,
+					'aqua': #d33682);
+
+@import 'include/pig';
