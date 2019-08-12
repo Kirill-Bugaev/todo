@@ -6,11 +6,12 @@ $body-fg-color: #f8f8f2;
 $border-color: #e6e6e6;
 $button-bg-color: #d8d8d8;
 $button-fg-color: #282a36;
-$ta-bg-color: #4d4d4d;
-$ph-color: #bfbfbf;
-$colors: ('default': #f8f8f2, 'red': #ff6e67,
+$textarea-bg-color: #4d4d4d;
+$placeholder-color: #bfbfbf;
+$task-colors: ('default': #f8f8f2, 'red': #ff6e67,
 					'green': #5af78e, 'yellow': #f4f99d,
 					'blue': #9aedfe, 'purple': #caa9fa,
 					'aqua': #ff92d0);
 
+@import 'include/colorvars';
 @import 'include/pig';

@@ -7,9 +7,9 @@
     <title>ToDo List</title>
 </head>
 
-<body onload="loadStyle()">
+<body onload="loadStyles()">
     <header>
-        <h1>TODO</h1><select class="themes" id="theme-sel" onchange="changeStyle(this.value)">
+        <h1 class="top-header">TODO</h1><select id="theme-select" onchange="changeStyle(this.value)">
             <option value="base16-dark">base16-dark</option>
             <option value="base16-light">base16-light</option>
             <option value="dracula">dracula</option>
@@ -19,18 +19,20 @@
             <option value="solarized-dark">solarized-dark</option>
             <option value="solarized-light">solarized-light</option>
         </select>
-    </header>
-    <form name="add" action="php/action.php" method="post">
-        <div class="buttons-container"><button class="button" type="submit">add</button><select class="palette" id="palette" required onchange="setSelectColor(this)">
-                <option class="color" value="default">blue?</option>
-                <option class="color" value="red">blue?</option>
-                <option class="color" value="green">blue?</option>
-                <option class="color" value="yellow">blue?</option>
-                <option class="color" value="blue">blue?</option>
-                <option class="color" value="purple">blue?</option>
-                <option class="color" value="aqua">blue?</option>
-            </select><button class="button permbutton" type="button" onclick="toggleNew(this)">new</button></div><textarea placeholder="Enter task here..." required></textarea>
-    </form>
+    </header><button onclick="showTask('10-08-2018 16:57', 'Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task ', 1, 1)">Show Task</button><button id="btn-equalizer">666666</button>
+    <div class="newtask-cont" id="newtask-cont">
+        <form class="newtask-form" id="newtask-form">
+            <div class="task-btn-cont" id="newtask-btn-cont"><button class="task-btn" id="newtask-submit-btn" type="submit">add</button><select class="task-color-select" id="newtask-color-select" required onchange="newTaskColorSelectOnChange(this)">
+                    <option class="task-color-opt" id="newtask-color-opt-default" value="default">blue?</option>
+                    <option class="task-color-opt" id="newtask-color-opt-red" value="red">blue?</option>
+                    <option class="task-color-opt" id="newtask-color-opt-green" value="green">blue?</option>
+                    <option class="task-color-opt" id="newtask-color-opt-yellow" value="yellow">blue?</option>
+                    <option class="task-color-opt" id="newtask-color-opt-blue" value="blue">blue?</option>
+                    <option class="task-color-opt" id="newtask-color-opt-purple" value="purple">blue?</option>
+                    <option class="task-color-opt" id="newtask-color-opt-aqua" value="aqua">blue?</option>
+                </select><button class="task-btn" id="newtask-hide-btn" type="button" onclick="newTaskHideBtnOnClick(this)">hide</button><button class="task-btn" id="newtask-new-btn" type="button" style="display: inline-block;" onclick="newTaskNewBtnOnClick(this)">new</button></div><textarea class="task-textarea" id="newtask-textarea" placeholder="Enter new task here..." required></textarea>
+        </form>
+    </div>
 </body>
 
 </html>

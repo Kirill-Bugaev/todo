@@ -1,21 +1,15 @@
 // sass-lint:disable indentation
 
-$body-width: 640px;
+$body-width: 800px;
 $min-body-width: 480px;
 $border-width: 2px;
-$button-height: 25px;
-$button-width: 60px;
-$button-margin-bottom: 3px;
-$min-form-height: $button-height + $button-margin-bottom;
+$button-margin-bottom: 5px;
+$min-textarea-height: 2 * $min-body-width / 3;
+$max-textarea-height: 320px;
 
-:root {
-	--button-height: #{$button-height};
-	--min-form-height: #{$min-form-height}
-}
-
-@mixin opt-color($color) {
-	background-color: $color;
-	color: $color;
+@mixin color-opt-style($color) {
+	background-color: var(--theme-color-#{$color});
+	color: var(--theme-color-#{$color});
 }
 
 :focus { outline: none; }
@@ -34,67 +28,69 @@ body {
 	body { width: 95%; }
 }
 
-h1 {
+h1.top-header {
 	display: inline-block;
 }
 
-select.themes {
+select#theme-select {
 	float: right;
 }
 
-form {
-	height: $min-form-height;
+div.newtask-cont {
 }
 
-.buttons-container {
+form.newtask-form {
+	height: var(--btn-height);
+}
+
+div.task-btn-cont {
 	display: inline;
 	float: right;
 	text-align: right;
-//	width: 100%;
 }
 
-.button {
+.task-btn {
 	background-color: $button-bg-color;
 	border: solid $border-width $border-color;
 	color: $button-fg-color;
 	display: none;
-	height: 25px;
+	height: var(--btn-height);
 	margin: {
 		bottom: $button-margin-bottom;
 		left: 5px;
 	}
-	width: $button-width;
+	width: var(--btn-width);
 }
 
-.permbutton {
-	display: inline;
+select.task-color-select {
+	@extend .task-btn;
+	background-color: var(--theme-color-default);
+	color: var(--theme-color-default);
 }
 
-select.palette {
-	@extend .button;
-	background-color: map-get($colors, 'default');
-	color: map-get($colors, 'default');
-}
-
-@each $name, $hex in $colors {
-	option.color[value="#{$name}"] {
-		@include opt-color($hex)
+@each $name, $_ in $task-colors {
+	option.task-color-opt[value="#{$name}"] {
+		@include color-opt-style($name)
 	}
 }
 
-textarea {
-	background-color: $ta-bg-color;
+textarea.task-textarea {
+	background-color: $textarea-bg-color;
 	border: none;
 	box-sizing: border-box;
 	box-shadow: inset 0 0 0 $border-width $border-color;
 	color: $body-fg-color;
 	display: none;
 	height: 50vh;
-	min-height: 2 * $min-body-width / 3;
+	max-height: $max-textarea-height;
+	min-height: $min-textarea-height;
 	resize: none;
 	padding: 2%;
 	width: 100%;
-	&::placeholder { color: $ph-color; }
+	&::placeholder { color: $placeholder-color; }
+}
+
+div.task-cont {
 }
 
 hr {
@@ -103,12 +99,15 @@ hr {
 	margin: 0;
 }
 
-.date-container {
+form.task-form {
+}
+
+span.task-date-cont {
 	display: inline-block;
-	line-height: $min-form-height;
+	line-height: calc(var(--btn-height) + #{$button-margin-bottom});
 //	vertical-align: middle;
 }
 
-.task-text {
+div.task-text-cont {
 	overflow-x: auto;
 }

@@ -1,0 +1,5 @@
+:root {
+	@each $name, $hex in $task-colors {
+		--theme-color-#{$name}: #{$hex};
+	}
+}
