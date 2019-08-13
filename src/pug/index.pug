@@ -9,20 +9,18 @@ html(lang=en)
 
 	body(onload="loadStyles()")
 		header
-			h1.top-header TODO
-			select#theme-select(onchange="changeStyle(this.value)")
+			h1 TODO
+			select.theme-select#theme-select(onchange="changeStyle(this.value)")
 				- const themeList = ["base16-dark", "base16-light", "dracula", "gruvbox-dark", "gruvbox-light", "nord", "solarized-dark", "solarized-light"];
 				each theme in themeList
 					option(value=theme) #{theme}
-
-		button(type=button onclick="showTask('10-08-2018 16:57', 'Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task Task ', 1, 1)") Show Task
 
 		button(id="btn-equalizer" type=button) 666666
 
 		.newtask-cont(id="newtask-cont")
 			form.newtask-form(id="newtask-form")
 				.task-btn-cont(id="newtask-btn-cont")
-					button.task-btn(id="newtask-submit-btn" type="submit") add
+					button.task-btn(id="newtask-add-btn" type="button" onclick="newTaskAddBtnOnClick(this)") add
 					select.task-color-select(id="newtask-color-select" required onchange="newTaskColorSelectOnChange(this)")
 						mixin opt(color)
 							option.task-color-opt(id="newtask-color-opt-"+color value=color) blue?

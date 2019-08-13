@@ -36,6 +36,37 @@ const btnHeightAdd = 4;
 const btnWidthAdd = 0;
 var _taskIndex = 0;
 
+// -- helpers --
+
+function extractTaskIdPrefix(id) {
+	return id.match(/^task(\d*)/g);
+}
+
+function removeElementById(id) {
+	var element = document.getElementById(id);
+	return element.parentNode.removeChild(element);
+}
+
+function insertAfter(newNode, referenceNode) {
+    referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+}
+
+function addLeadingZero(num) {
+	let str = num.toString();
+	return str.length == 2 ? str : "0" + str;
+}
+
+function timeToStr(mtime) {
+	let date = new Date(mtime);
+	let day = addLeadingZero(date.getDate());
+	let month = addLeadingZero(date.getMonth() + 1);
+	let str = day + "-" + month + "-" + date.getFullYear();
+	str += " " + date.getHours() + ":" + date.getMinutes();
+	return str;
+}
+
+// -- styles routine --
+
 function equalizeBtnSize() {
 	let btnEqualizer = document.getElementById("btn-equalizer");
 	let eqBtnHeight = getStyle(btnEqualizer, "height");
@@ -71,9 +102,11 @@ function changeStyle(theme) {
 	document.cookie = document.getElementById("theme-select").selectedIndex;
 }
 
+// -- newtask events --
+
 function newTaskNewBtnOnClick(btn) {
 	document.getElementById("newtask-form").style.height = "100%";
-	document.getElementById("newtask-submit-btn").style.display = "inline-block";
+	document.getElementById("newtask-add-btn").style.display = "inline-block";
 	document.getElementById("newtask-color-select").style.display = "inline-block";
 	document.getElementById("newtask-hide-btn").style.display = "inline-block";
 	let textarea = document.getElementById("newtask-textarea");
@@ -91,7 +124,7 @@ function newTaskNewBtnOnClick(btn) {
 
 function newTaskHideBtnOnClick(btn) {
 	document.getElementById("newtask-form").style.height = getStyle(btn, "height");
-	document.getElementById("newtask-submit-btn").style.display = "none";
+	document.getElementById("newtask-add-btn").style.display = "none";
 	document.getElementById("newtask-color-select").style.display = "none";
 	document.getElementById("newtask-new-btn").style.display = "inline-block";
 	document.getElementById("newtask-textarea").style.display = "none";
@@ -105,23 +138,34 @@ function newTaskColorSelectOnChange(select) {
 	select.style.backgroundColor = colorVar;
 }
 
-// --- Dynamic elements ---
-
-function extractTaskIdPrefix(id) {
-	return id.match(/^task(\d*)/g);
+function newTaskAddBtnOnClick(btn) {
+	let textarea = document.getElementById("newtask-textarea");
+	// check task not empty
+	if (textarea.value.replace(/\s/g, "") == "") {
+		return;
+	}
+	let select = document.getElementById("newtask-color-select");
+	let hideBtn = document.getElementById("newtask-hide-btn");
+	let date = new Date().getTime();
+	let task = textarea.value;
+	let color = select.selectedIndex;
+	let done = 0;
+	showTask(date, task, color, done);
+	textarea.value = "";
+	select.selectedIndex = 0;
+	newTaskColorSelectOnChange(select);
+	newTaskHideBtnOnClick(hideBtn);
 }
 
-function removeElementById(id) {
-	var element = document.getElementById(id);
-	return element.parentNode.removeChild(element);
-}
-
-function insertAfter(newNode, referenceNode) {
-    referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
-}
+// -- task events--
 
 function taskRemoveBtnOnClick(btn) {
 	removeElementById(extractTaskIdPrefix(btn.id) + "-cont");
+}
+
+function taskDateContOnDoubleClick(span) {
+	let textCont = document.getElementById(extractTaskIdPrefix(span.id) + "-text-cont");
+	taskTextContOnDoubleClick(textCont);
 }
 
 function taskColorSelectOnChange(select) {
@@ -183,11 +227,14 @@ function taskTextContOnDoubleClick(textCont) {
 	taskUndoneBtnOnClick(undoneBtn);
 }
 
+// -- dynamic elements --
+
 function createTaskDateCont(idPrefix, date) {
 	let span = document.createElement("span");
 	span.id = idPrefix + "-date";
 	span.classList.add("task-date-cont");
-	span.innerHTML = date;
+	span.addEventListener("dblclick", function() {taskDateContOnDoubleClick(this);});
+	span.innerHTML = timeToStr(date);
 	return span;
 }
 

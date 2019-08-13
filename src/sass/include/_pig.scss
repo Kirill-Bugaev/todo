@@ -28,12 +28,15 @@ body {
 	body { width: 95%; }
 }
 
-h1.top-header {
-	display: inline-block;
+header {
+	position: relative;
 }
 
-select#theme-select {
-	float: right;
+select.theme-select {
+	position: absolute;
+	right: 0;
+	top: 50%;
+	transform: translateY(-50%);
 }
 
 div.newtask-cont {
