@@ -3,11 +3,15 @@
 
 <head>
     <meta charset="utf-8">
+    <script>
+        const useClient = 1
+    </script>
     <script src="./js/gui.js"></script>
+    <script src="./js/client.js"></script>
     <title>ToDo List</title>
 </head>
 
-<body onload="loadStyles()">
+<body onload="loadStyles(); loadTasks();">
     <header>
         <h1>TODO</h1><select class="theme-select" id="theme-select" onchange="changeStyle(this.value)">
             <option value="base16-dark">base16-dark</option>
@@ -30,7 +34,7 @@
                     <option class="task-color-opt" id="newtask-color-opt-blue" value="blue">blue?</option>
                     <option class="task-color-opt" id="newtask-color-opt-purple" value="purple">blue?</option>
                     <option class="task-color-opt" id="newtask-color-opt-aqua" value="aqua">blue?</option>
-                </select><button class="task-btn" id="newtask-hide-btn" type="button" onclick="newTaskHideBtnOnClick(this)">hide</button><button class="task-btn" id="newtask-new-btn" type="button" style="display: inline-block;" onclick="newTaskNewBtnOnClick(this)">new</button></div><textarea class="task-textarea" id="newtask-textarea" placeholder="Enter new task here..." required></textarea>
+                </select><button class="task-btn" id="newtask-hide-btn" type="button" onclick="newTaskHideBtnOnClick(this)">hide</button><button class="task-btn" id="newtask-new-btn" type="button" style="display: inline-block;" onclick="newTaskNewBtnOnClick(this)">new</button></div><textarea class="task-textarea" id="newtask-textarea" maxlength="65535" placeholder="Enter new task here..." required></textarea>
         </form>
     </div>
 </body>

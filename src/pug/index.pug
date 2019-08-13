@@ -4,10 +4,12 @@ html(lang=en)
 	head
 		meta(charset="utf-8")
 		//- link(rel="stylesheet" type="text/css" href="./css/style.css")
+		script const useClient = 1
 		script(src="./js/gui.js")
+		script(src="./js/client.js")
 		title ToDo List
 
-	body(onload="loadStyles()")
+	body(onload="loadStyles(); loadTasks();")
 		header
 			h1 TODO
 			select.theme-select#theme-select(onchange="changeStyle(this.value)")
@@ -29,4 +31,4 @@ html(lang=en)
 							+opt(col)
 					button.task-btn(id="newtask-hide-btn" type="button" onclick="newTaskHideBtnOnClick(this)") hide
 					button.task-btn(id="newtask-new-btn" type="button" style="display: inline-block;" onclick="newTaskNewBtnOnClick(this)") new
-				textarea.task-textarea(id="newtask-textarea" placeholder="Enter new task here..." required)
+				textarea.task-textarea(id="newtask-textarea" maxlength="65535" placeholder="Enter new task here..." required)

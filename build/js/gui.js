@@ -31,6 +31,7 @@ function getStyle(el, styleProp) {
 }
 // ============
 
+// const useClient = 1
 const taskColors = ["default", "red", "green", "yellow", "blue", "purple", "aqua"];
 const btnHeightAdd = 4;
 const btnWidthAdd = 0;
@@ -60,8 +61,9 @@ function timeToStr(mtime) {
 	let date = new Date(mtime);
 	let day = addLeadingZero(date.getDate());
 	let month = addLeadingZero(date.getMonth() + 1);
-	let str = day + "-" + month + "-" + date.getFullYear();
-	str += " " + date.getHours() + ":" + date.getMinutes();
+	let hours = addLeadingZero(date.getHours());
+	let minutes = addLeadingZero(date.getMinutes());
+	let str = day + "-" + month + "-" + date.getFullYear() + " " + hours + ":" + minutes;
 	return str;
 }
 
@@ -104,6 +106,25 @@ function changeStyle(theme) {
 
 // -- newtask events --
 
+function newTaskAddBtnOnClick(btn) {
+	let textarea = document.getElementById("newtask-textarea");
+	// check task not empty
+	if (textarea.value.replace(/\s/g, "") == "") {
+		return;
+	}
+	let select = document.getElementById("newtask-color-select");
+	let hideBtn = document.getElementById("newtask-hide-btn");
+	let date = new Date().getTime();
+	let task = textarea.value;
+	let color = select.selectedIndex;
+	let done = 0;
+	showTask(date, task, color, done);
+	textarea.value = "";
+	select.selectedIndex = 0;
+	newTaskColorSelectOnChange(select);
+	newTaskHideBtnOnClick(hideBtn);
+}
+
 function newTaskNewBtnOnClick(btn) {
 	document.getElementById("newtask-form").style.height = "100%";
 	document.getElementById("newtask-add-btn").style.display = "inline-block";
@@ -136,25 +157,6 @@ function newTaskColorSelectOnChange(select) {
 	let colorVar = "var(--theme-color-" + colorName + ")";
 	select.style.color = colorVar;
 	select.style.backgroundColor = colorVar;
-}
-
-function newTaskAddBtnOnClick(btn) {
-	let textarea = document.getElementById("newtask-textarea");
-	// check task not empty
-	if (textarea.value.replace(/\s/g, "") == "") {
-		return;
-	}
-	let select = document.getElementById("newtask-color-select");
-	let hideBtn = document.getElementById("newtask-hide-btn");
-	let date = new Date().getTime();
-	let task = textarea.value;
-	let color = select.selectedIndex;
-	let done = 0;
-	showTask(date, task, color, done);
-	textarea.value = "";
-	select.selectedIndex = 0;
-	newTaskColorSelectOnChange(select);
-	newTaskHideBtnOnClick(hideBtn);
 }
 
 // -- task events--
@@ -318,6 +320,7 @@ function createTaskTextarea(idPrefix, text) {
 	textarea.id = idPrefix + "-textarea";
 	textarea.classList.add("task-textarea");
 	textarea.addEventListener("focusout", function() {taskTextareaOnFocusOut(this);});
+	textarea.setAttribute("maxlength", 65535);
 	textarea.innerHTML = text;
 	return textarea;
 }
@@ -370,4 +373,15 @@ function showTask(date, text, color, done) {
 	let taskCont = createTaskCont(idPrefix, date, text, color, done);
 	let newTaskCont = document.getElementById("newtask-cont");
 	insertAfter(taskCont, newTaskCont);
+}
+
+function showLoadedTasks(tasks) {
+	for (let i = 0; i < tasks.length; i++)
+		showTask(tasks[i].date, tasks[i].text, tasks[i].color, tasks[i].done);
+}
+
+function loadTasks() {
+	if (!useClient)
+		return;
+	clientGetTasks(showLoadedTasks);
 }

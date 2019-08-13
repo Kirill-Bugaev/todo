@@ -108,4 +108,5 @@ span.task-date-cont {
   line-height: calc(var(--btn-height) + 5px); }
 
 div.task-text-cont {
+  white-space: pre-wrap;
   overflow-x: auto; }
