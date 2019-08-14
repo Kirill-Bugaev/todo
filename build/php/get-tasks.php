@@ -1,26 +1,18 @@
 <?php
 
 require_once 'login.php';
+require_once 'routine.php';
 
 header('Content-Type: text/xml');
-echo '<?xml version="1.0" encoding="UTF-8"?>';
-echo "<xml>";
 
-$dbconn = new mysqli($hn, $un, $pw, $db);
-if ($dbconn->connect_error) {
-	echo "<error>$dbconn->error</error>";
-	echo "</xml>";
-	exit(0);
-}
+$dbconn = db_connect($hostname, $username, $password, $database);
 
 $query = "SELECT * FROM todo ORDER BY id";
 $result = $dbconn->query($query);
-if (!$result) {
-	echo "<error>$dbconn->error</error>";
-	echo "</xml>";
-	exit(0);
-}
+check_query_result($dbconn, $result);
 
+echo '<?xml version="1.0" encoding="UTF-8"?>';
+echo "<xml>";
 $rows = $result->num_rows;
 for ($i = 0; $i < $rows; $i++) {
 	$row = $result->fetch_array(MYSQLI_ASSOC);
@@ -32,10 +24,9 @@ for ($i = 0; $i < $rows; $i++) {
 		. '>' 				. htmlentities($row['text'])
 		. '</task>';
 }
+echo "</xml>";
 
 $result->close();
 $dbconn->close();
-
-echo "</xml>";
 
 ?>

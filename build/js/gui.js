@@ -113,16 +113,10 @@ function newTaskAddBtnOnClick(btn) {
 		return;
 	}
 	let select = document.getElementById("newtask-color-select");
-	let hideBtn = document.getElementById("newtask-hide-btn");
-	let date = new Date().getTime();
-	let task = textarea.value;
+	let text = textarea.value.trim();
 	let color = select.selectedIndex;
 	let done = 0;
-	showTask(date, task, color, done);
-	textarea.value = "";
-	select.selectedIndex = 0;
-	newTaskColorSelectOnChange(select);
-	newTaskHideBtnOnClick(hideBtn);
+	addTask(text, color, done);
 }
 
 function newTaskNewBtnOnClick(btn) {
@@ -197,6 +191,11 @@ function taskDoneBtnOnClick(btn) {
 
 function taskTextareaOnFocusOut(textarea) {
 	let idPrefix = extractTaskIdPrefix(textarea.id);
+	if (textarea.value.replace(/\s/g, "") == "") {
+		let removeBtn = document.getElementById(idPrefix + "-remove-btn");
+		taskRemoveBtnOnClick(removeBtn);
+		return;
+	}
 	let textCont = document.getElementById(idPrefix + "-text-cont");
 	textCont.innerHTML = textarea.value;
 	textarea.style.display = "none";
@@ -231,6 +230,14 @@ function taskTextContOnDoubleClick(textCont) {
 
 // -- dynamic elements --
 
+function createTaskDbIdCont(idPrefix, dbId) {
+	let span = document.createElement("span");
+	span.id = idPrefix + "-db-id";
+	span.style.display = "none";
+	span.innerHTML = dbId;
+	return span;
+}
+
 function createTaskDateCont(idPrefix, date) {
 	let span = document.createElement("span");
 	span.id = idPrefix + "-date";
@@ -246,7 +253,7 @@ function createTaskRemoveBtn(idPrefix) {
 	btn.classList.add("task-btn");
 	btn.type = "button";
 	btn.addEventListener("click", function() {taskRemoveBtnOnClick(this);});
-	btn.style.display = 'inline-block';
+	btn.style.display = "inline-block";
 	btn.innerHTML = "remove";
 	return btn;
 }
@@ -282,7 +289,7 @@ function createTaskUndoneBtn(idPrefix, done) {
 	btn.classList.add("task-btn");
 	btn.type = "button";
 	btn.addEventListener("click", function() {taskUndoneBtnOnClick(this);});
-	if (done == 1)
+	if (done != 0)
 		btn.style.display = 'inline-block';
 	btn.innerHTML = "undone";
 	return btn;
@@ -344,44 +351,80 @@ function createTaskTextCont(idPrefix, text, color, done) {
 	div.classList.add("task-text-cont");
 	let colorVar = "var(--theme-color-" + taskColors[color] + ")";
 	div.style.color = colorVar;
-	if (done == 1)
+	if (done != 0)
 		div.style.textDecoration = "line-through";
 	div.innerHTML = text;
 	div.addEventListener("dblclick", function() {taskTextContOnDoubleClick(this);});
 	return div;
 }
 
-function createTaskCont(idPrefix, date, text, color, done) {
+function createTaskCont(idPrefix, dbId, date, text, color, done) {
 	let div =  document.createElement("div");
 	div.id = idPrefix + "-cont";
 	div.classList.add("task-cont");
 	let brBefore = document.createElement("br");
 	let hr = document.createElement("hr");
 	let brAfter = document.createElement("br");
+	let taskDbIdCont = createTaskDbIdCont(idPrefix, dbId);
 	let taskForm = createTaskForm(idPrefix, date, text, color, done);
 	let taskTextCont = createTaskTextCont(idPrefix, text, color, done);
 	div.appendChild(brBefore);
 	div.appendChild(hr);
 	div.appendChild(brAfter);
+	div.appendChild(taskDbIdCont);
 	div.appendChild(taskForm);
 	div.appendChild(taskTextCont);
 	return div;
 }
 
-function showTask(date, text, color, done) {
+function showTask(dbId, date, text, color, done) {
 	let idPrefix = "task" + (_taskIndex++);
-	let taskCont = createTaskCont(idPrefix, date, text, color, done);
+	let taskCont = createTaskCont(idPrefix, dbId, date, text, color, done);
 	let newTaskCont = document.getElementById("newtask-cont");
 	insertAfter(taskCont, newTaskCont);
 }
 
+// -- client interaction --
+
 function showLoadedTasks(tasks) {
 	for (let i = 0; i < tasks.length; i++)
-		showTask(tasks[i].date, tasks[i].text, tasks[i].color, tasks[i].done);
+		showTask(tasks[i].dbId, tasks[i].date, tasks[i].text, tasks[i].color, tasks[i].done);
 }
 
 function loadTasks() {
 	if (!useClient)
 		return;
 	clientGetTasks(showLoadedTasks);
+}
+
+function resetNewTaskForm() {
+	let textarea = document.getElementById("newtask-textarea");
+	let select = document.getElementById("newtask-color-select");
+	let hideBtn = document.getElementById("newtask-hide-btn");
+	textarea.value = "";
+	select.selectedIndex = 0;
+	newTaskColorSelectOnChange(select);
+	newTaskHideBtnOnClick(hideBtn);
+}
+
+function showAddedTask(task) {
+	if (!task)
+		return;
+	showTask(task.dbId, task.date, task.text, task.color, task.done);
+	resetNewTaskForm();
+}
+
+function addTask(text, color, done) {
+	if (!useClient) {
+		let dbId = 0;
+		let date = new Date().getTime();
+		showTask(dbId, date, text, color, done);
+		resetNewTaskForm();
+		return;
+	}
+	let task = new Object;
+	task.text = text;
+	task.color = color;
+	task.done = done;
+	clientAddTask(task, showAddedTask);
 }

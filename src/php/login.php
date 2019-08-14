@@ -1,6 +1,6 @@
 <?php
-$hn = 'localhost';
-$db = 'todo';
-$un = 'todo';
-$pw = 'todo';
+$hostname = 'localhost';
+$database = 'todo';
+$username = 'todo';
+$password = 'todo';
 ?>
