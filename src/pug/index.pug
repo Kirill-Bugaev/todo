@@ -3,6 +3,7 @@ html(lang=en)
 
 	head
 		meta(charset="utf-8")
+		meta(name="viewport" content="width=device-width, initial-scale=1")
 		//- link(rel="stylesheet" type="text/css" href="./css/style.css")
 		script const useClient = 1
 		script(src="./js/gui.js")
@@ -25,8 +26,8 @@ html(lang=en)
 					button.task-btn(id="newtask-add-btn" type="button" onclick="newTaskAddBtnOnClick(this)") add
 					select.task-color-select(id="newtask-color-select" required onchange="newTaskColorSelectOnChange(this)")
 						mixin opt(color)
-							option.task-color-opt(id="newtask-color-opt-"+color value=color) blue?
-						- const colors = ["default", "red", "green", "yellow", "blue", "purple", "aqua"];
+							option.task-color-opt(id="newtask-color-opt-"+color value=color) #{color}
+						- const colors = ["default", "red", "green", "yellow", "blue", "purple", "awesome"];
 						each col in colors
 							+opt(col)
 					button.task-btn(id="newtask-hide-btn" type="button" onclick="newTaskHideBtnOnClick(this)") hide

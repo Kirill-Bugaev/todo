@@ -1,15 +1,22 @@
 <?php
 
 require_once 'login.php';
+require_once 'config.php';
 require_once 'routine.php';
 
 header('Content-Type: text/xml');
 
 $dbconn = db_connect($hostname, $username, $password, $database);
  
-if (!isset($_POST['text'])
-		|| strlen($text = mysqli_real_escape_string($dbconn, trim($_POST['text']))) == 0)
-	xml_die("Task text is empty");
+if (check_table_exists($dbconn, 'todo') != 1)
+	check_query_result($dbconn, create_todo_table($dbconn, $table));
+
+if (isset($_POST['text'])) {
+	$text = mysqli_real_escape_string($dbconn, $_POST['text']);
+	if (strlen($text) > $max_text_length)
+		xml_die("Task text too long (max $max_text_length)");
+} else
+	$text = "";
 if (isset($_POST['color']))
 	$color = mysqli_real_escape_string($dbconn, $_POST['color']);
 else
@@ -19,7 +26,7 @@ if (isset($_POST['done']))
 else
 	$done = 0;
 
-$query = "INSERT INTO todo(text, color, done) VALUES('$text', '$color', '$done');";
+$query = "INSERT INTO $table(text, color, done) VALUES('$text', '$color', '$done');";
 $result = $dbconn->query($query);
 check_query_result($dbconn, $result);
 
@@ -39,6 +46,6 @@ echo <<<_END
 <xml>
 	<task id="$id" date="$date"></task>
 </xml>
-_END
+_END;
 
 ?>

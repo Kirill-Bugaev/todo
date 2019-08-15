@@ -20,21 +20,34 @@ function asyncRequest(phpUri, handler, callback) {
 	return request;
 }
 
-function xmlErrorHandler(xmlDoc) {
+function setRequestHeader(request, contLength) {
+	request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	request.setRequestHeader("Content-length", contLength);
+	request.setRequestHeader("Connection", "close");
+}
+
+function xmlErrorCheck(xmlDoc) {
 	if (!xmlDoc) {
 		alert("Server error: bad XML");
-		return 1;
+		return 0;
 	}
 	let error = xmlDoc.getElementsByTagName("error")[0];
 	if (error) {
-		alert("Server error: " + error.childNodes[0].nodeValue);
-		return 1;
+		let errMsg = "Server error: ";
+		if (error.childNodes.length > 0)
+			errMsg += error.childNodes[0].nodeValue;
+		else
+			errMsg += "unknown";
+		alert(errMsg);
+		return 0;
 	}
-	return 0;
+	return 1;
 }
 
+// -- response handlers --
+
 function getTasksResponseHandler(xmlDoc) {
-	if (xmlErrorHandler(xmlDoc))
+	if (!xmlErrorCheck(xmlDoc))
 		return [];
 	let tasks = xmlDoc.getElementsByTagName("task");
 	let parsed = [];
@@ -50,9 +63,10 @@ function getTasksResponseHandler(xmlDoc) {
 	return parsed;
 }
 
-function addTasksResponseHandler(task, xmlDoc) {
-	if (xmlErrorHandler(xmlDoc))
+function addTasksResponseHandler(xmlDoc) {
+	if (!xmlErrorCheck(xmlDoc))
 		return null;
+	let task = new Object;
 	let taskEl = xmlDoc.getElementsByTagName("task");
 	if (taskEl.length == 0) {
 		alert("Server error: Bad response");
@@ -65,6 +79,18 @@ function addTasksResponseHandler(task, xmlDoc) {
 	return task;
 }
 
+function removeTaskResponseHandler(xmlDoc) {
+	if (!xmlErrorCheck(xmlDoc))
+		return null;
+	return 1;
+}
+
+function editTaskResponseHandler(xmlDoc) {
+	if (!xmlErrorCheck(xmlDoc))
+		return null;
+	return 1;
+}
+
 // -- client API --
 
 function clientGetTasks(callback) {
@@ -73,12 +99,29 @@ function clientGetTasks(callback) {
 }
 
 function clientAddTask(task, callback) {
+	let request = asyncRequest("./php/add-task.php", addTasksResponseHandler, callback);
 	let params = "text=" + encodeURIComponent(task.text);
 	params += "&color=" + task.color + "&done=" + task.done;
-	let handler = function(xmlDoc) { return addTasksResponseHandler(task, xmlDoc); };
-	let request = asyncRequest("./php/add-task.php", handler, callback);
-	request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-	request.setRequestHeader("Content-length", params.length);
-	request.setRequestHeader("Connection", "close");
+	setRequestHeader(request, params.length);
+	request.send(params);
+}
+
+function clientRemoveTask(dbId, callback) {
+	let request = asyncRequest("./php/remove-task.php", removeTaskResponseHandler, callback);
+	let params = "id=" + dbId;
+	setRequestHeader(request, params.length);
+	request.send(params);
+}
+
+function clientEditTask(task, callback) {
+	let request = asyncRequest("./php/edit-task.php", editTaskResponseHandler, callback);
+	let params = "id=" + task.dbId;
+	if (task.color != null)
+		params += "&color=" + task.color;
+	if (task.done != null)
+		params += "&done=" + task.done;
+	if (task.text != null)
+		params += "&text=" + encodeURIComponent(task.text);
+	setRequestHeader(request, params.length);
 	request.send(params);
 }

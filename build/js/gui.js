@@ -29,10 +29,30 @@ function getStyle(el, styleProp) {
     return value;
   }
 }
+
+// https://stackoverflow.com/questions/27560653/jquery-on-double-click-event-dblclick-for-mobile
+let _touchtime = 0;
+function doubleClickHook(handler) {
+	if (_touchtime == 0) {
+		// set first click
+		_touchtime = new Date().getTime();
+	} else {
+		// compare first click to this click and see if they occurred within double click threshold
+		if (((new Date().getTime()) - _touchtime) < 800) {
+			// double click occurred
+			handler();
+			_touchtime = 0;
+		} else {
+			// not a double click so set as a new first click
+			_touchtime = new Date().getTime();
+		}
+	}
+}
+
 // ============
 
 // const useClient = 1
-const taskColors = ["default", "red", "green", "yellow", "blue", "purple", "aqua"];
+const taskColors = ["default", "red", "green", "yellow", "blue", "purple", "awesome"];
 const btnHeightAdd = 4;
 const btnWidthAdd = 0;
 var _taskIndex = 0;
@@ -95,13 +115,81 @@ function loadStyles() {
 	link.href = "./css/" + select.value + ".css";
 	link.type = "text/css";
 	link.rel = "stylesheet";
+	link.addEventListener("load", equalizeBtnSize);
 	document.getElementsByTagName("head")[0].appendChild(link);
-	equalizeBtnSize();
+//	equalizeBtnSize();
 }
 
 function changeStyle(theme) {
 	document.getElementById("theme-style").href = "./css/" + theme + ".css";
 	document.cookie = document.getElementById("theme-select").selectedIndex;
+}
+
+// -- task routine --
+
+function resetNewTaskForm() {
+	let textarea = document.getElementById("newtask-textarea");
+	let select = document.getElementById("newtask-color-select");
+	let hideBtn = document.getElementById("newtask-hide-btn");
+	textarea.value = "";
+	select.selectedIndex = 0;
+	newTaskColorSelectOnChange(select);
+	newTaskHideBtnOnClick(hideBtn);
+}
+
+function setTaskColor(idPrefix, color) {
+	let select = document.getElementById(idPrefix + "-color-select");
+	select.selectedIndex = color;
+	let colorName = select.options[select.selectedIndex].value;
+	let colorVar = "var(--theme-color-" + colorName + ")";
+	select.style.color = colorVar;
+	select.style.backgroundColor = colorVar;
+	let textCont = document.getElementById(idPrefix + "-text-cont");
+	textCont.style.color = colorVar;
+}
+
+function setTaskDone(idPrefix) {
+	let textCont = document.getElementById(idPrefix + "-text-cont");
+	textCont.style.textDecoration = "line-through";
+	let doneBtn = document.getElementById(idPrefix + "-done-btn");
+	let undoneBtn = document.getElementById(idPrefix + "-undone-btn");
+	doneBtn.style.display = "none";
+	undoneBtn.style.display = "inline-block";
+}
+
+function setTaskUndone(idPrefix) {
+	let textCont = document.getElementById(idPrefix + "-text-cont");
+	textCont.style.textDecoration = "none";
+	let doneBtn = document.getElementById(idPrefix + "-done-btn");
+	let undoneBtn = document.getElementById(idPrefix + "-undone-btn");
+	undoneBtn.style.display = "none";
+	doneBtn.style.display = "inline-block";
+}
+
+function setTaskState(idPrefix, done) {
+	if (done)
+		setTaskDone(idPrefix);
+	else
+		setTaskUndone(idPrefix);
+}
+
+function setTaskText(idPrefix, text) {
+	let textarea = document.getElementById(idPrefix + "-textarea");
+	if (text == "") {
+		let removeBtn = document.getElementById(idPrefix + "-remove-btn");
+		taskRemoveBtnOnClick(removeBtn);
+		return;
+	}
+	let textCont = document.getElementById(idPrefix + "-text-cont");
+	textCont.innerHTML = text;
+	textarea.style.display = "none";
+	
+	// set form height
+	let form = document.getElementById(idPrefix + "-form");
+	let btnCont = document.getElementById(idPrefix + "-btn-cont");
+	form.style.height = getStyle(btnCont, "height");
+
+	textCont.style.display = "block";
 }
 
 // -- newtask events --
@@ -156,7 +244,7 @@ function newTaskColorSelectOnChange(select) {
 // -- task events--
 
 function taskRemoveBtnOnClick(btn) {
-	removeElementById(extractTaskIdPrefix(btn.id) + "-cont");
+	removeTask(extractTaskIdPrefix(btn.id));
 }
 
 function taskDateContOnDoubleClick(span) {
@@ -165,47 +253,25 @@ function taskDateContOnDoubleClick(span) {
 }
 
 function taskColorSelectOnChange(select) {
-	let colorName = select.options[select.selectedIndex].value;
-	let colorVar = "var(--theme-color-" + colorName + ")";
-	select.style.color = colorVar;
-	select.style.backgroundColor = colorVar;
-	let textCont = document.getElementById(extractTaskIdPrefix(select.id) + "-text-cont");
-	textCont.style.color = colorVar;
+	let idPrefix = extractTaskIdPrefix(select.id);
+	let color = select.selectedIndex;
+	changeTaskColor(idPrefix, color);
 }
 
 function taskUndoneBtnOnClick(btn) {
 	let idPrefix = extractTaskIdPrefix(btn.id);
-	let textCont = document.getElementById(idPrefix + "-text-cont");
-	textCont.style.textDecoration = "none";
-	document.getElementById(idPrefix + "-done-btn").style.display = "inline-block";
-	btn.style.display = "none";
+	changeTaskState(idPrefix, 0);
 }
 
 function taskDoneBtnOnClick(btn) {
 	let idPrefix = extractTaskIdPrefix(btn.id);
-	let textCont = document.getElementById(idPrefix + "-text-cont");
-	textCont.style.textDecoration = "line-through";
-	document.getElementById(idPrefix + "-undone-btn").style.display = "inline-block";
-	btn.style.display = "none";
+	changeTaskState(idPrefix, 1);
 }
 
 function taskTextareaOnFocusOut(textarea) {
 	let idPrefix = extractTaskIdPrefix(textarea.id);
-	if (textarea.value.replace(/\s/g, "") == "") {
-		let removeBtn = document.getElementById(idPrefix + "-remove-btn");
-		taskRemoveBtnOnClick(removeBtn);
-		return;
-	}
-	let textCont = document.getElementById(idPrefix + "-text-cont");
-	textCont.innerHTML = textarea.value;
-	textarea.style.display = "none";
-	
-	// set form height
-	let form = document.getElementById(idPrefix + "-form");
-	let btnCont = document.getElementById(idPrefix + "-btn-cont");
-	form.style.height = getStyle(btnCont, "height");
-
-	textCont.style.display = "block";
+	let text = textarea.value.trim();
+	changeTaskText(idPrefix, text);
 }
 
 function taskTextContOnDoubleClick(textCont) {
@@ -214,6 +280,7 @@ function taskTextContOnDoubleClick(textCont) {
 	let form = document.getElementById(idPrefix + "-form");
 	form.style.height = "100%";
 	let textarea = document.getElementById(idPrefix + "-textarea");
+	textarea.value = textCont.innerHTML;
 	textarea.style.display = "inline-block";
 
 	// calc form height
@@ -242,7 +309,8 @@ function createTaskDateCont(idPrefix, date) {
 	let span = document.createElement("span");
 	span.id = idPrefix + "-date";
 	span.classList.add("task-date-cont");
-	span.addEventListener("dblclick", function() {taskDateContOnDoubleClick(this);});
+	let handler = () => taskDateContOnDoubleClick(span);
+	span.addEventListener("click", () => doubleClickHook(handler));
 	span.innerHTML = timeToStr(date);
 	return span;
 }
@@ -263,7 +331,7 @@ function createTaskColorOption(idPrefix, colorName) {
 	option.id = idPrefix + "-color-option-" + colorName;
 	option.classList.add("task-color-opt");
 	option.value = colorName;
-	option.innerHTML = "blue?";
+	option.innerHTML = colorName;
 	return option;
 }
 
@@ -354,7 +422,8 @@ function createTaskTextCont(idPrefix, text, color, done) {
 	if (done != 0)
 		div.style.textDecoration = "line-through";
 	div.innerHTML = text;
-	div.addEventListener("dblclick", function() {taskTextContOnDoubleClick(this);});
+	let handler = () => taskTextContOnDoubleClick(div);
+	div.addEventListener("click", () => doubleClickHook(handler));
 	return div;
 }
 
@@ -397,20 +466,10 @@ function loadTasks() {
 	clientGetTasks(showLoadedTasks);
 }
 
-function resetNewTaskForm() {
-	let textarea = document.getElementById("newtask-textarea");
-	let select = document.getElementById("newtask-color-select");
-	let hideBtn = document.getElementById("newtask-hide-btn");
-	textarea.value = "";
-	select.selectedIndex = 0;
-	newTaskColorSelectOnChange(select);
-	newTaskHideBtnOnClick(hideBtn);
-}
-
-function showAddedTask(task) {
-	if (!task)
+function showAddedTask(dbTask, guiTask) {
+	if (!dbTask)
 		return;
-	showTask(task.dbId, task.date, task.text, task.color, task.done);
+	showTask(dbTask.dbId, dbTask.date, guiTask.text, guiTask.color, guiTask.done);
 	resetNewTaskForm();
 }
 
@@ -426,5 +485,71 @@ function addTask(text, color, done) {
 	task.text = text;
 	task.color = color;
 	task.done = done;
-	clientAddTask(task, showAddedTask);
+	clientAddTask(task, (dbTask) => showAddedTask(dbTask, task));
+}
+
+function wipeRemovedTask(removed, idPrefix) {
+	if (!removed)
+		return;
+	removeElementById(idPrefix + "-cont");
+}
+
+function removeTask(idPrefix) {
+	if (!useClient) {
+		removeElementById(idPrefix + "-cont");
+		return;
+	}
+	let dbId = document.getElementById(idPrefix + "-db-id").innerHTML;
+	clientRemoveTask(dbId, (removed) => wipeRemovedTask(removed, idPrefix));
+}
+
+function updateTaskColor(changed, idPrefix, color) {
+	if (!changed)
+		return;
+	setTaskColor(idPrefix, color);
+}
+
+function changeTaskColor(idPrefix, color) {
+	if (!useClient) {
+		setTaskColor(idPrefix, color);
+		return;
+	}
+	let task = new Object;
+	task.dbId = document.getElementById(idPrefix + "-db-id").innerHTML;
+	task.color = color;
+	clientEditTask(task, (changed) => updateTaskColor(changed, idPrefix, color));
+}
+
+function updateTaskState(changed, idPrefix, done) {
+	if (!changed)
+		return;
+	setTaskState(idPrefix, done);
+}
+
+function changeTaskState(idPrefix, done) {
+	if (!useClient) {
+		setTaskState(idPrefix, done);
+		return;
+	}
+	let task = new Object;
+	task.dbId = document.getElementById(idPrefix + "-db-id").innerHTML;
+	task.done = done;
+	clientEditTask(task, (changed) => updateTaskState(changed, idPrefix, done));
+}
+
+function updateTaskText(changed, idPrefix, text) {
+	if (!changed)
+		return;
+	setTaskText(idPrefix, text);
+}
+
+function changeTaskText(idPrefix, text) {
+	if (!useClient) {
+		setTaskText(idPrefix, text);
+		return;
+	}
+	let task = new Object;
+	task.dbId = document.getElementById(idPrefix + "-db-id").innerHTML;
+	task.text = text;
+	clientEditTask(task, (changed) => updateTaskText(changed, idPrefix, text));
 }

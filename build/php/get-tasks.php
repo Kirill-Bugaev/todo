@@ -1,13 +1,14 @@
 <?php
 
 require_once 'login.php';
+require_once 'config.php';
 require_once 'routine.php';
 
 header('Content-Type: text/xml');
 
 $dbconn = db_connect($hostname, $username, $password, $database);
 
-$query = "SELECT * FROM todo ORDER BY id";
+$query = "SELECT * FROM $table ORDER BY id";
 $result = $dbconn->query($query);
 check_query_result($dbconn, $result);
 

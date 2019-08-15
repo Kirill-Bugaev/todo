@@ -5,7 +5,7 @@
   --theme-color-yellow: #b57614;
   --theme-color-blue: #076678;
   --theme-color-purple: #8f3f71;
-  --theme-color-aqua: #427b58; }
+  --theme-color-awesome: #427b58; }
 
 :focus {
   outline: none; }
@@ -15,7 +15,7 @@ body {
   color: #3c3836;
   font-family: DejaVu Sans;
   margin: 0 auto;
-  min-width: 480px;
+  min-width: 320px;
   padding: 0;
   width: 800px; }
 
@@ -78,9 +78,9 @@ option.task-color-opt[value="purple"] {
   background-color: var(--theme-color-purple);
   color: var(--theme-color-purple); }
 
-option.task-color-opt[value="aqua"] {
-  background-color: var(--theme-color-aqua);
-  color: var(--theme-color-aqua); }
+option.task-color-opt[value="awesome"] {
+  background-color: var(--theme-color-awesome);
+  color: var(--theme-color-awesome); }
 
 textarea.task-textarea {
   background-color: #d5c4a1;
@@ -91,7 +91,7 @@ textarea.task-textarea {
   display: none;
   height: 50vh;
   max-height: 320px;
-  min-height: 320px;
+  min-height: 213.33333px;
   resize: none;
   padding: 2%;
   width: 100%; }
