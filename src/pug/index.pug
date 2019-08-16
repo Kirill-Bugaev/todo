@@ -5,7 +5,7 @@ html(lang=en)
 		meta(charset="utf-8")
 		meta(name="viewport" content="width=device-width, initial-scale=1")
 		//- link(rel="stylesheet" type="text/css" href="./css/style.css")
-		script const useClient = 1
+		script(src="./js/config.js")
 		script(src="./js/gui.js")
 		script(src="./js/client.js")
 		title ToDo List
@@ -19,17 +19,23 @@ html(lang=en)
 					option(value=theme) #{theme}
 
 		button(id="btn-equalizer" type=button) 666666
+		- const colors = ["default", "red", "green", "yellow", "blue", "purple", "super"];
 
-		.newtask-cont(id="newtask-cont")
-			form.newtask-form(id="newtask-form")
+		.task-cont(id="newtask-cont")
+			form.task-form(id="newtask-form")
+				select.filter-select(id="filter-color-select" onchange="filterColorSelectOnChange(this)")
+					mixin filter-select-opt(color)
+						option.task-color-opt(id="filter-color-opt-"+color value=color) #{color}
+					option.filter-all-opt(id="filter-select-opt-all" value="all") all
+					each col in colors
+						+filter-select-opt(col)
 				.task-btn-cont(id="newtask-btn-cont")
 					button.task-btn(id="newtask-add-btn" type="button" onclick="newTaskAddBtnOnClick(this)") add
-					select.task-color-select(id="newtask-color-select" required onchange="newTaskColorSelectOnChange(this)")
-						mixin opt(color)
+					select.task-color-select(id="newtask-color-select" onchange="newTaskColorSelectOnChange(this)")
+						mixin task-select-opt(color)
 							option.task-color-opt(id="newtask-color-opt-"+color value=color) #{color}
-						- const colors = ["default", "red", "green", "yellow", "blue", "purple", "awesome"];
 						each col in colors
-							+opt(col)
+							+task-select-opt(col)
 					button.task-btn(id="newtask-hide-btn" type="button" onclick="newTaskHideBtnOnClick(this)") hide
 					button.task-btn(id="newtask-new-btn" type="button" style="display: inline-block;" onclick="newTaskNewBtnOnClick(this)") new
-				textarea.task-textarea(id="newtask-textarea" maxlength="65535" placeholder="Enter new task here..." required)
+				textarea.task-textarea(id="newtask-textarea" maxlength="65535" placeholder="Enter new task here...")

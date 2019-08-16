@@ -5,7 +5,7 @@
   --theme-color-yellow: #f7ca88;
   --theme-color-blue: #7cafc2;
   --theme-color-purple: #ba8baf;
-  --theme-color-awesome: #dc9656; }
+  --theme-color-super: #dc9656; }
 
 :focus {
   outline: none; }
@@ -32,7 +32,7 @@ select.theme-select {
   top: 50%;
   transform: translateY(-50%); }
 
-form.newtask-form {
+form.task-form {
   height: var(--btn-height); }
 
 div.task-btn-cont {
@@ -40,7 +40,7 @@ div.task-btn-cont {
   float: right;
   text-align: right; }
 
-.task-btn, select.task-color-select {
+.task-btn, select.filter-select, select.task-color-select {
   background-color: #383838;
   border: solid 2px #a16946;
   color: #f8f8f8;
@@ -50,9 +50,19 @@ div.task-btn-cont {
   margin-left: 5px;
   width: var(--btn-width); }
 
+select.filter-select {
+  background-color: #e8e8e8;
+  color: #282828;
+  display: inline-block;
+  margin-left: 0; }
+
 select.task-color-select {
   background-color: var(--theme-color-default);
   color: var(--theme-color-default); }
+
+option.filter-all-opt {
+  background-color: #e8e8e8;
+  color: #282828; }
 
 option.task-color-opt[value="default"] {
   background-color: var(--theme-color-default);
@@ -78,9 +88,9 @@ option.task-color-opt[value="purple"] {
   background-color: var(--theme-color-purple);
   color: var(--theme-color-purple); }
 
-option.task-color-opt[value="awesome"] {
-  background-color: var(--theme-color-awesome);
-  color: var(--theme-color-awesome); }
+option.task-color-opt[value="super"] {
+  background-color: var(--theme-color-super);
+  color: var(--theme-color-super); }
 
 textarea.task-textarea {
   background-color: #b8b8b8;
@@ -89,9 +99,9 @@ textarea.task-textarea {
   box-shadow: inset 0 0 0 2px #a16946;
   color: #282828;
   display: none;
-  height: 50vh;
+  height: auto;
   max-height: 320px;
-  min-height: 213.33333px;
+  min-height: 320px;
   resize: none;
   padding: 2%;
   width: 100%; }
@@ -108,5 +118,5 @@ span.task-date-cont {
   line-height: calc(var(--btn-height) + 5px); }
 
 div.task-text-cont {
-  white-space: pre-wrap;
-  overflow-x: auto; }
+  overflow-wrap: break-word;
+  white-space: pre-wrap; }

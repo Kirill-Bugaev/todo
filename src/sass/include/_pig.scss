@@ -4,7 +4,7 @@ $body-width: 800px;
 $min-body-width: 320px;
 $border-width: 2px;
 $button-margin-bottom: 5px;
-$min-textarea-height: 2 * $min-body-width / 3;
+$min-textarea-height: $min-body-width;
 $max-textarea-height: 320px;
 
 @mixin color-opt-style($color) {
@@ -39,10 +39,10 @@ select.theme-select {
 	transform: translateY(-50%);
 }
 
-div.newtask-cont {
+div.task-cont {
 }
 
-form.newtask-form {
+form.task-form {
 	height: var(--btn-height);
 }
 
@@ -65,10 +65,23 @@ div.task-btn-cont {
 	width: var(--btn-width);
 }
 
+select.filter-select {
+	@extend .task-btn;
+	background-color: $body-bg-color;
+	color: $body-fg-color;
+	display: inline-block;
+	margin-left: 0;
+}
+
 select.task-color-select {
 	@extend .task-btn;
 	background-color: var(--theme-color-default);
 	color: var(--theme-color-default);
+}
+
+option.filter-all-opt {
+	background-color: $body-bg-color;
+	color: $body-fg-color;
 }
 
 @each $name, $_ in $task-colors {
@@ -84,7 +97,7 @@ textarea.task-textarea {
 	box-shadow: inset 0 0 0 $border-width $border-color;
 	color: $body-fg-color;
 	display: none;
-	height: 50vh;
+	height: auto;
 	max-height: $max-textarea-height;
 	min-height: $min-textarea-height;
 	resize: none;
@@ -93,16 +106,10 @@ textarea.task-textarea {
 	&::placeholder { color: $placeholder-color; }
 }
 
-div.task-cont {
-}
-
 hr {
 	border: #{$border-width/2} solid $border-color;
 	color: $border-color;
 	margin: 0;
-}
-
-form.task-form {
 }
 
 span.task-date-cont {
@@ -112,6 +119,7 @@ span.task-date-cont {
 }
 
 div.task-text-cont {
+	overflow-wrap: break-word;
+//	overflow-x: auto;
 	white-space: pre-wrap;
-	overflow-x: auto;
 }

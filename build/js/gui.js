@@ -52,7 +52,7 @@ function doubleClickHook(handler) {
 // ============
 
 // const useClient = 1
-const taskColors = ["default", "red", "green", "yellow", "blue", "purple", "awesome"];
+const taskColors = ["default", "red", "green", "yellow", "blue", "purple", "super"];
 const btnHeightAdd = 4;
 const btnWidthAdd = 0;
 var _taskIndex = 0;
@@ -115,14 +115,44 @@ function loadStyles() {
 	link.href = "./css/" + select.value + ".css";
 	link.type = "text/css";
 	link.rel = "stylesheet";
-	link.addEventListener("load", equalizeBtnSize);
+//	link.addEventListener("load", equalizeBtnSize);
 	document.getElementsByTagName("head")[0].appendChild(link);
-//	equalizeBtnSize();
+	equalizeBtnSize();
 }
 
 function changeStyle(theme) {
 	document.getElementById("theme-style").href = "./css/" + theme + ".css";
 	document.cookie = document.getElementById("theme-select").selectedIndex;
+}
+
+// -- filter --
+
+function filterTasks(colorName) {
+	let colorNum = taskColors.indexOf(colorName);
+	for (let i = 0; i < _taskIndex; i++) {
+		let idPrefix = "task" + i;
+		let taskCont = document.getElementById(idPrefix + "-cont");
+		let select = document.getElementById(idPrefix + "-color-select");
+		if (colorNum == -1 || select.selectedIndex == colorNum)
+			taskCont.style.display = "block";
+		else
+			taskCont.style.display = "none";
+	}
+}
+
+function filterColorSelectOnChange(select) {
+	let colorName = select.options[select.selectedIndex].value;
+	let fg, bg;
+	if (colorName == "all") {
+		fg = getStyle(document.body, "color");
+		bg = getStyle(document.body, "background-color");
+	} else {
+		fg = "var(--theme-color-" + colorName + ")";
+		bg = fg;
+	}
+	select.style.color = fg;
+	select.style.backgroundColor = bg;
+	filterTasks(colorName);
 }
 
 // -- task routine --
@@ -152,18 +182,26 @@ function setTaskDone(idPrefix) {
 	let textCont = document.getElementById(idPrefix + "-text-cont");
 	textCont.style.textDecoration = "line-through";
 	let doneBtn = document.getElementById(idPrefix + "-done-btn");
-	let undoneBtn = document.getElementById(idPrefix + "-undone-btn");
 	doneBtn.style.display = "none";
-	undoneBtn.style.display = "inline-block";
+	let undoneBtn = document.getElementById(idPrefix + "-undone-btn");
+	let textarea = document.getElementById(idPrefix + "-textarea");
+	if (getStyle(textarea, "display") == "none")
+		undoneBtn.style.display = "inline-block";
+	else
+		undoneBtn.style.display = "none";
 }
 
 function setTaskUndone(idPrefix) {
 	let textCont = document.getElementById(idPrefix + "-text-cont");
 	textCont.style.textDecoration = "none";
-	let doneBtn = document.getElementById(idPrefix + "-done-btn");
 	let undoneBtn = document.getElementById(idPrefix + "-undone-btn");
 	undoneBtn.style.display = "none";
-	doneBtn.style.display = "inline-block";
+	let doneBtn = document.getElementById(idPrefix + "-done-btn");
+	let textarea = document.getElementById(idPrefix + "-textarea");
+	if (getStyle(textarea, "display") == "none")
+		doneBtn.style.display = "inline-block";
+	else
+		doneBtn.style.display = "none";
 }
 
 function setTaskState(idPrefix, done) {
@@ -190,6 +228,10 @@ function setTaskText(idPrefix, text) {
 	form.style.height = getStyle(btnCont, "height");
 
 	textCont.style.display = "block";
+	let okBtn = document.getElementById(idPrefix + "-ok-btn");
+	okBtn.style.display = "none";
+	let doneBtn = document.getElementById(idPrefix + "-done-btn");
+	doneBtn.style.display = "inline-block";
 }
 
 // -- newtask events --
@@ -278,7 +320,7 @@ function taskTextContOnDoubleClick(textCont) {
 	textCont.style.display = "none";
 	let idPrefix = extractTaskIdPrefix(textCont.id);
 	let form = document.getElementById(idPrefix + "-form");
-	form.style.height = "100%";
+	form.style.height = "auto";
 	let textarea = document.getElementById(idPrefix + "-textarea");
 	textarea.value = textCont.innerHTML;
 	textarea.style.display = "inline-block";
@@ -290,9 +332,15 @@ function taskTextContOnDoubleClick(textCont) {
 	let formHeight = btnContHeight + textareaHeigth + "px";
 	form.style.height = formHeight;
 
-	textarea.focus();
+	let doneBtn = document.getElementById(idPrefix + "-done-btn");
+	doneBtn.style.display = "none";
 	let undoneBtn = document.getElementById(idPrefix + "-undone-btn");
+	undoneBtn.style.display = "none";
 	taskUndoneBtnOnClick(undoneBtn);
+	let okBtn = document.getElementById(idPrefix + "-ok-btn");
+	okBtn.style.display = "inline-block";
+
+	textarea.focus();
 }
 
 // -- dynamic elements --
@@ -351,6 +399,15 @@ function createTaskColorSelect(idPrefix, color) {
 	return select;
 }
 
+function createTaskOkBtn(idPrefix) {
+	let btn = document.createElement("button");
+	btn.id = idPrefix + "-ok-btn";
+	btn.classList.add("task-btn");
+	btn.type = "button";
+	btn.innerHTML = "ok";
+	return btn;
+}
+
 function createTaskUndoneBtn(idPrefix, done) {
 	let btn = document.createElement("button");
 	btn.id = idPrefix + "-undone-btn";
@@ -381,10 +438,12 @@ function createTaskBtnCont(idPrefix, color, done) {
 	div.classList.add("task-btn-cont");
 	let removeBtn = createTaskRemoveBtn(idPrefix);
 	let colorSelect = createTaskColorSelect(idPrefix, color);
+	let okBtn = createTaskOkBtn(idPrefix);
 	let undoneBtn = createTaskUndoneBtn(idPrefix, done);
 	let doneBtn = createTaskDoneBtn(idPrefix, done);
 	div.appendChild(removeBtn);
 	div.appendChild(colorSelect);
+	div.appendChild(okBtn);
 	div.appendChild(undoneBtn);
 	div.appendChild(doneBtn);
 	return div;
@@ -404,6 +463,7 @@ function createTaskForm(idPrefix, date, text, color, done) {
 	let form = document.createElement("form");
 	form.id = idPrefix + "-form";
 	form.classList.add("task-form");
+	form.style.height = "auto";
 	let dateCont = createTaskDateCont(idPrefix, date);
 	let btnCont = createTaskBtnCont(idPrefix, color, done);
 	let taskTextarea = createTaskTextarea(idPrefix, text);

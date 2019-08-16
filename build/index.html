@@ -4,9 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script>
-        const useClient = 1
-    </script>
+    <script src="./js/config.js"></script>
     <script src="./js/gui.js"></script>
     <script src="./js/client.js"></script>
     <title>ToDo List</title>
@@ -25,17 +23,26 @@
             <option value="solarized-light">solarized-light</option>
         </select>
     </header><button id="btn-equalizer">666666</button>
-    <div class="newtask-cont" id="newtask-cont">
-        <form class="newtask-form" id="newtask-form">
-            <div class="task-btn-cont" id="newtask-btn-cont"><button class="task-btn" id="newtask-add-btn" type="button" onclick="newTaskAddBtnOnClick(this)">add</button><select class="task-color-select" id="newtask-color-select" required onchange="newTaskColorSelectOnChange(this)">
+    <div class="task-cont" id="newtask-cont">
+        <form class="task-form" id="newtask-form"><select class="filter-select" id="filter-color-select" onchange="filterColorSelectOnChange(this)">
+                <option class="filter-all-opt" id="filter-select-opt-all" value="all">all</option>
+                <option class="task-color-opt" id="filter-color-opt-default" value="default">default</option>
+                <option class="task-color-opt" id="filter-color-opt-red" value="red">red</option>
+                <option class="task-color-opt" id="filter-color-opt-green" value="green">green</option>
+                <option class="task-color-opt" id="filter-color-opt-yellow" value="yellow">yellow</option>
+                <option class="task-color-opt" id="filter-color-opt-blue" value="blue">blue</option>
+                <option class="task-color-opt" id="filter-color-opt-purple" value="purple">purple</option>
+                <option class="task-color-opt" id="filter-color-opt-super" value="super">super</option>
+            </select>
+            <div class="task-btn-cont" id="newtask-btn-cont"><button class="task-btn" id="newtask-add-btn" type="button" onclick="newTaskAddBtnOnClick(this)">add</button><select class="task-color-select" id="newtask-color-select" onchange="newTaskColorSelectOnChange(this)">
                     <option class="task-color-opt" id="newtask-color-opt-default" value="default">default</option>
                     <option class="task-color-opt" id="newtask-color-opt-red" value="red">red</option>
                     <option class="task-color-opt" id="newtask-color-opt-green" value="green">green</option>
                     <option class="task-color-opt" id="newtask-color-opt-yellow" value="yellow">yellow</option>
                     <option class="task-color-opt" id="newtask-color-opt-blue" value="blue">blue</option>
                     <option class="task-color-opt" id="newtask-color-opt-purple" value="purple">purple</option>
-                    <option class="task-color-opt" id="newtask-color-opt-awesome" value="awesome">awesome</option>
-                </select><button class="task-btn" id="newtask-hide-btn" type="button" onclick="newTaskHideBtnOnClick(this)">hide</button><button class="task-btn" id="newtask-new-btn" type="button" style="display: inline-block;" onclick="newTaskNewBtnOnClick(this)">new</button></div><textarea class="task-textarea" id="newtask-textarea" maxlength="65535" placeholder="Enter new task here..." required></textarea>
+                    <option class="task-color-opt" id="newtask-color-opt-super" value="super">super</option>
+                </select><button class="task-btn" id="newtask-hide-btn" type="button" onclick="newTaskHideBtnOnClick(this)">hide</button><button class="task-btn" id="newtask-new-btn" type="button" style="display: inline-block;" onclick="newTaskNewBtnOnClick(this)">new</button></div><textarea class="task-textarea" id="newtask-textarea" maxlength="65535" placeholder="Enter new task here..."></textarea>
         </form>
     </div>
 </body>
