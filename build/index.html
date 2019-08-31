@@ -24,8 +24,12 @@
         </select>
     </header><button id="btn-equalizer">666666</button>
     <div class="task-cont" id="newtask-cont">
-        <form class="task-form" id="newtask-form"><select class="filter-select" id="filter-color-select" onchange="filterColorSelectOnChange(this)">
-                <option class="filter-all-opt" id="filter-select-opt-all" value="all">all</option>
+        <form class="task-form" id="newtask-form"><select class="filter-select" id="filter-done-select" onchange="filterColorSelectOnChange(this)">
+                <option class="filter-opt" id="filter-done-opt-all" value="all">all</option>
+                <option class="filter-opt" id="filter-done-opt-undone" value="undone">actual</option>
+                <option class="filter-opt" id="filter-done-opt-done" value="done">done</option>
+            </select><select class="filter-select" id="filter-color-select" onchange="filterColorSelectOnChange(this)">
+                <option class="filter-opt" id="filter-color-opt-all" value="all">all</option>
                 <option class="task-color-opt" id="filter-color-opt-default" value="default">default</option>
                 <option class="task-color-opt" id="filter-color-opt-red" value="red">red</option>
                 <option class="task-color-opt" id="filter-color-opt-green" value="green">green</option>

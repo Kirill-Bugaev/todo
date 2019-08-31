@@ -127,13 +127,23 @@ function changeStyle(theme) {
 
 // -- filter --
 
-function filterTasks(colorName) {
+function filterTasks() {
+	let doneSelect = document.getElementById("filter-done-select");
+	let doneFilterValue = doneSelect.options[doneSelect.selectedIndex].value;
+	let colorSelect = document.getElementById("filter-color-select");
+	let colorName = colorSelect.options[colorSelect.selectedIndex].value;
 	let colorNum = taskColors.indexOf(colorName);
 	for (let i = 0; i < _taskIndex; i++) {
 		let idPrefix = "task" + i;
 		let taskCont = document.getElementById(idPrefix + "-cont");
+		if (!taskCont) continue;
+		let doneLabel = document.getElementById(idPrefix + "-done-label");
+		let doneState = getStyle(doneLabel, "display") == "none" ? 0 : 1;
 		let select = document.getElementById(idPrefix + "-color-select");
-		if (colorNum == -1 || select.selectedIndex == colorNum)
+		if ( ( doneFilterValue == "all"
+				|| (doneFilterValue == "done" && doneState == 1)
+				|| (doneFilterValue == "undone" && doneState == 0) )
+				&& (colorNum == -1 || select.selectedIndex == colorNum) )
 			taskCont.style.display = "block";
 		else
 			taskCont.style.display = "none";
@@ -146,13 +156,11 @@ function filterColorSelectOnChange(select) {
 	if (colorName == "all") {
 		fg = getStyle(document.body, "color");
 		bg = getStyle(document.body, "background-color");
-	} else {
-		fg = "var(--theme-color-" + colorName + ")";
-		bg = fg;
-	}
+	} else
+		bg = fg = "var(--theme-color-" + colorName + ")";
 	select.style.color = fg;
 	select.style.backgroundColor = bg;
-	filterTasks(colorName);
+	filterTasks();
 }
 
 // -- task routine --
@@ -181,27 +189,27 @@ function setTaskColor(idPrefix, color) {
 function setTaskDone(idPrefix) {
 	let textCont = document.getElementById(idPrefix + "-text-cont");
 	textCont.style.textDecoration = "line-through";
-	let doneBtn = document.getElementById(idPrefix + "-done-btn");
-	doneBtn.style.display = "none";
-	let undoneBtn = document.getElementById(idPrefix + "-undone-btn");
+	let undoneLabel = document.getElementById(idPrefix + "-undone-label");
+	undoneLabel.style.display = "none";
+	let doneLabel = document.getElementById(idPrefix + "-done-label");
 	let textarea = document.getElementById(idPrefix + "-textarea");
 	if (getStyle(textarea, "display") == "none")
-		undoneBtn.style.display = "inline-block";
+		doneLabel.style.display = "inline-block";
 	else
-		undoneBtn.style.display = "none";
+		doneLabel.style.display = "none";
 }
 
 function setTaskUndone(idPrefix) {
 	let textCont = document.getElementById(idPrefix + "-text-cont");
 	textCont.style.textDecoration = "none";
-	let undoneBtn = document.getElementById(idPrefix + "-undone-btn");
-	undoneBtn.style.display = "none";
-	let doneBtn = document.getElementById(idPrefix + "-done-btn");
+	let doneLabel = document.getElementById(idPrefix + "-done-label");
+	doneLabel.style.display = "none";
+	let undoneLabel = document.getElementById(idPrefix + "-undone-label");
 	let textarea = document.getElementById(idPrefix + "-textarea");
 	if (getStyle(textarea, "display") == "none")
-		doneBtn.style.display = "inline-block";
+		undoneLabel.style.display = "inline-block";
 	else
-		doneBtn.style.display = "none";
+		undoneLabel.style.display = "none";
 }
 
 function setTaskState(idPrefix, done) {
@@ -230,8 +238,8 @@ function setTaskText(idPrefix, text) {
 	textCont.style.display = "block";
 	let okBtn = document.getElementById(idPrefix + "-ok-btn");
 	okBtn.style.display = "none";
-	let doneBtn = document.getElementById(idPrefix + "-done-btn");
-	doneBtn.style.display = "inline-block";
+	let undoneLabel = document.getElementById(idPrefix + "-undone-label");
+	undoneLabel.style.display = "inline-block";
 }
 
 // -- newtask events --
@@ -300,14 +308,14 @@ function taskColorSelectOnChange(select) {
 	changeTaskColor(idPrefix, color);
 }
 
-function taskUndoneBtnOnClick(btn) {
-	let idPrefix = extractTaskIdPrefix(btn.id);
-	changeTaskState(idPrefix, 0);
+function taskUndoneLabelOnClick(label) {
+	let idPrefix = extractTaskIdPrefix(label.id);
+	changeTaskState(idPrefix, 1);
 }
 
-function taskDoneBtnOnClick(btn) {
-	let idPrefix = extractTaskIdPrefix(btn.id);
-	changeTaskState(idPrefix, 1);
+function taskDoneLabelOnClick(label) {
+	let idPrefix = extractTaskIdPrefix(label.id);
+	changeTaskState(idPrefix, 0);
 }
 
 function taskTextareaOnFocusOut(textarea) {
@@ -332,11 +340,11 @@ function taskTextContOnDoubleClick(textCont) {
 	let formHeight = btnContHeight + textareaHeigth + "px";
 	form.style.height = formHeight;
 
-	let doneBtn = document.getElementById(idPrefix + "-done-btn");
-	doneBtn.style.display = "none";
-	let undoneBtn = document.getElementById(idPrefix + "-undone-btn");
-	undoneBtn.style.display = "none";
-	taskUndoneBtnOnClick(undoneBtn);
+	let doneLabel = document.getElementById(idPrefix + "-done-label");
+	doneLabel.style.display = "none";
+	let undoneLabel = document.getElementById(idPrefix + "-undone-label");
+	undoneLabel.style.display = "none";
+	taskDoneLabelOnClick(doneLabel);
 	let okBtn = document.getElementById(idPrefix + "-ok-btn");
 	okBtn.style.display = "inline-block";
 
@@ -408,28 +416,26 @@ function createTaskOkBtn(idPrefix) {
 	return btn;
 }
 
-function createTaskUndoneBtn(idPrefix, done) {
-	let btn = document.createElement("button");
-	btn.id = idPrefix + "-undone-btn";
-	btn.classList.add("task-btn");
-	btn.type = "button";
-	btn.addEventListener("click", function() {taskUndoneBtnOnClick(this);});
-	if (done != 0)
-		btn.style.display = 'inline-block';
-	btn.innerHTML = "undone";
-	return btn;
+function createTaskUndoneLabel(idPrefix, done) {
+	let label = document.createElement("label");
+	label.id = idPrefix + "-undone-label";
+	label.classList.add("done-label");
+	label.addEventListener("click", function() {taskUndoneLabelOnClick(this);});
+	if (done == 0)
+		label.style.display = 'inline-block';
+	label.innerHTML = "&nbsp";
+	return label;
 }
 
-function createTaskDoneBtn(idPrefix, done) {
-	let btn = document.createElement("button");
-	btn.id = idPrefix + "-done-btn";
-	btn.classList.add("task-btn");
-	btn.type = "button";
-	btn.addEventListener("click", function() {taskDoneBtnOnClick(this);});
-	if (done == 0)
-		btn.style.display = 'inline-block';
-	btn.innerHTML = "done";
-	return btn;
+function createTaskDoneLabel(idPrefix, done) {
+	let label = document.createElement("label");
+	label.id = idPrefix + "-done-label";
+	label.classList.add("done-label");
+	label.addEventListener("click", function() {taskDoneLabelOnClick(this);});
+	if (done != 0)
+		label.style.display = 'inline-block';
+	label.innerHTML = "&#x2713";
+	return label;
 }
 
 function createTaskBtnCont(idPrefix, color, done) {
@@ -439,13 +445,13 @@ function createTaskBtnCont(idPrefix, color, done) {
 	let removeBtn = createTaskRemoveBtn(idPrefix);
 	let colorSelect = createTaskColorSelect(idPrefix, color);
 	let okBtn = createTaskOkBtn(idPrefix);
-	let undoneBtn = createTaskUndoneBtn(idPrefix, done);
-	let doneBtn = createTaskDoneBtn(idPrefix, done);
+	let undoneLabel = createTaskUndoneLabel(idPrefix, done);
+	let doneLabel = createTaskDoneLabel(idPrefix, done);
 	div.appendChild(removeBtn);
 	div.appendChild(colorSelect);
 	div.appendChild(okBtn);
-	div.appendChild(undoneBtn);
-	div.appendChild(doneBtn);
+	div.appendChild(undoneLabel);
+	div.appendChild(doneLabel);
 	return div;
 }
 
@@ -567,6 +573,13 @@ function updateTaskColor(changed, idPrefix, color) {
 	if (!changed)
 		return;
 	setTaskColor(idPrefix, color);
+	let select = document.getElementById("filter-color-select");
+	let colorName = select.options[select.selectedIndex].value;
+	let colorNum = taskColors.indexOf(colorName);
+	if (colorNum != -1 && colorNum != color) {
+		let taskCont = document.getElementById(idPrefix + "-cont");
+		taskCont.style.display = "none";
+	}
 }
 
 function changeTaskColor(idPrefix, color) {
@@ -584,6 +597,13 @@ function updateTaskState(changed, idPrefix, done) {
 	if (!changed)
 		return;
 	setTaskState(idPrefix, done);
+	let select = document.getElementById("filter-done-select");
+	let doneFilterValue = select.options[select.selectedIndex].value;
+	if ( (doneFilterValue == "done" && done == 0)
+			|| (doneFilterValue == "undone" && done == 1) ) {
+		let taskCont = document.getElementById(idPrefix + "-cont");
+		taskCont.style.display = "none";
+	}
 }
 
 function changeTaskState(idPrefix, done) {

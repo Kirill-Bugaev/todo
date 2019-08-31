@@ -23,10 +23,14 @@ html(lang=en)
 
 		.task-cont(id="newtask-cont")
 			form.task-form(id="newtask-form")
+				select.filter-select(id="filter-done-select" onchange="filterColorSelectOnChange(this)")
+					option.filter-opt(id="filter-done-opt-all" value="all") all
+					option.filter-opt(id="filter-done-opt-undone" value="undone") actual
+					option.filter-opt(id="filter-done-opt-done" value="done") done
 				select.filter-select(id="filter-color-select" onchange="filterColorSelectOnChange(this)")
 					mixin filter-select-opt(color)
 						option.task-color-opt(id="filter-color-opt-"+color value=color) #{color}
-					option.filter-all-opt(id="filter-select-opt-all" value="all") all
+					option.filter-opt(id="filter-color-opt-all" value="all") all
 					each col in colors
 						+filter-select-opt(col)
 				.task-btn-cont(id="newtask-btn-cont")

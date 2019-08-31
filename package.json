@@ -17,11 +17,19 @@
   },
   "homepage": "https://github.com/Kirill-Bugaev/todo#readme",
   "devDependencies": {
+    "@aquafadas/gulp-php-minify": "^0.3.1",
     "eslint": "^6.1.0",
     "gulp": "^4.0.2",
+    "gulp-clean-css": "^4.2.0",
     "gulp-html-beautify": "^1.0.1",
     "gulp-livereload": "^4.0.1",
+    "gulp-minify": "^3.1.0",
     "gulp-pug": "^4.0.1",
-    "gulp-sass": "^4.0.2"
+    "gulp-sass": "^4.0.2",
+    "gulp-uglify": "^3.0.2",
+    "uglify-js": "^3.6.0"
+  },
+  "dependencies": {
+    "@cedx/gulp-php-minify": "^10.1.0"
   }
 }

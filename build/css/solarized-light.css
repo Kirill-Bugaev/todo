@@ -48,21 +48,23 @@ div.task-btn-cont {
   height: var(--btn-height);
   margin-bottom: 5px;
   margin-left: 5px;
+  vertical-align: top;
   width: var(--btn-width); }
 
 select.filter-select {
-  background-color: #fdf6e3;
-  color: #657b83;
+  background-color: #586e75;
+  color: #fdf6e3;
   display: inline-block;
-  margin-left: 0; }
+  margin-left: 0;
+  margin-right: 5px; }
+
+option.filter-opt {
+  background-color: #586e75;
+  color: #fdf6e3; }
 
 select.task-color-select {
   background-color: var(--theme-color-default);
   color: var(--theme-color-default); }
-
-option.filter-all-opt {
-  background-color: #fdf6e3;
-  color: #657b83; }
 
 option.task-color-opt[value="default"] {
   background-color: var(--theme-color-default);
@@ -112,6 +114,19 @@ hr {
   border: 1px solid #cb4b16;
   color: #cb4b16;
   margin: 0; }
+
+label.done-label {
+  background-color: #586e75;
+  box-shadow: inset 0 0 0 2px #cb4b16;
+  color: #fdf6e3;
+  display: none;
+  font-size: var(--btn-height);
+  height: var(--btn-height);
+  margin-bottom: 5px;
+  margin-left: 5px;
+  margin-right: 0;
+  margin-top: 0;
+  width: var(--btn-height); }
 
 span.task-date-cont {
   display: inline-block;
